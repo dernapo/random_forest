@@ -11,13 +11,13 @@ In this project, we have seen that **using the data from accelerometers** on the
 
 ## Data processing
 ### Load data
-```{r}
+```{r, message=FALSE, warning=FALSE}
 suppressWarnings(library(caret))
 training <- read.csv("Data/pml-training.csv", header=T) #load training data
 test <- read.csv("Data/pml-testing.csv", header=T) #load test data
 ```
 ### Cleaning data
-```{r}
+```{r, message=FALSE, warning=FALSE}
 training <- subset(training, select=-c(1:6)) #remove row numbers, time stamp and user names
 test <- subset(test, select=-c(1:6)) #remove row numbers, time stamp and user names
 classe <- training$classe #save classe information
@@ -37,7 +37,7 @@ Training data set:
 Test data set:
 -  Includes 20 observations, without the parameter **classe** but with **problem_id**
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 set.seed(33433)
 inTraining <- createDataPartition(training$classe, p=0.5, list=FALSE)
 train <- training[ inTraining,]
@@ -50,7 +50,7 @@ We will follow the recommendation of the study and use a Random Forest method to
 Fore the model accurancy we will be using a **10 fold cross validation** and each forest with 10 trees. 
 If accuracy is low then we will try a second model.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 set.seed(33433)
 tr <- trainControl(method = "cv", number = 10) #setting parameters for the model
 fit.rf <- train(classe~.,                      #fit model
@@ -66,7 +66,7 @@ print(fit.rf$finalModel)
 ## Estimating model accuracy
 We evaluate the model with the validation data
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 set.seed(33433)
 pred.rf <- predict(fit.rf, newdata = validate) #Predict with validation data
 confusionMatrix(pred.rf, validate$classe)$overall[1] #Measure accuracy with validation data
@@ -77,15 +77,15 @@ There is no need to improve the model
 
 ## Most relevant variables
 Here we plot the variables that have a higher impact on the fitted model
-```{r}
+```{r, message=FALSE, warning=FALSE}
 VarImportance <- varImp(fit.rf)
 plot(VarImportance, main = "Most relevant variables", top = 10)
 ```
 
 ## Predict classe
-Now we will predit *classe* for each *problem_id* of the test data set
+Now we will predit **classe** for each **problem_id** of the test data set
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 pred.rf.test<-predict(fit.rf, newdata = test[,-which(names(test) %in% "problem_id")])
 t(data.frame(problem_id = test$problem_id, prediction = pred.rf.test))
 ```

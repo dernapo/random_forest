@@ -123,11 +123,8 @@ In this project, we have seen that <strong>using the data from accelerometers</s
 <h2>Data processing</h2>
 <div id="load-data" class="section level3">
 <h3>Load data</h3>
-<pre class="r"><code>suppressWarnings(library(caret))</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Note: the specification for S3 class &quot;family&quot; in package 'MatrixModels' seems equivalent to one from package 'lme4': not turning on duplicate class definitions for this class.</code></pre>
-<pre class="r"><code>training &lt;- read.csv(&quot;Data/pml-training.csv&quot;, header=T) #load training data
+<pre class="r"><code>suppressWarnings(library(caret))
+training &lt;- read.csv(&quot;Data/pml-training.csv&quot;, header=T) #load training data
 test &lt;- read.csv(&quot;Data/pml-testing.csv&quot;, header=T) #load test data</code></pre>
 </div>
 <div id="cleaning-data" class="section level3">
@@ -143,7 +140,7 @@ training$classe &lt;- classe; rm(classe) #add classe information and delete vari
 </div>
 <div id="prepare-training-validate-and-test-data" class="section level3">
 <h3>Prepare training, validate and test data</h3>
-<p>Training data set: - It includes the parameter to estimate: **classe* - We will split the training set on two subsets (50% observations each), train and validate<br />
+<p>Training data set: - It includes the parameter to estimate: <strong>classe</strong> - We will split the training set on two subsets (50% observations each), train and validate<br />
 - Train to build the model and validate to validate it</p>
 <p>Test data set: - Includes 20 observations, without the parameter <strong>classe</strong> but with <strong>problem_id</strong></p>
 <pre class="r"><code>set.seed(33433)
@@ -165,16 +162,9 @@ fit.rf &lt;- train(classe~.,                      #fit model
               trControl = tr, #model parameters
               allowParallel = TRUE, #use parallel processing (if availible)
               ntree = 10, #number of trees
-              verbose = FALSE)</code></pre>
-<pre><code>## Loading required package: randomForest</code></pre>
-<pre><code>## randomForest 4.6-12</code></pre>
-<pre><code>## Type rfNews() to see new features/changes/bug fixes.</code></pre>
-<pre><code>## 
-## Attaching package: 'randomForest'</code></pre>
-<pre><code>## The following object is masked from 'package:ggplot2':
-## 
-##     margin</code></pre>
-<pre class="r"><code>print(fit.rf$finalModel)</code></pre>
+              verbose = FALSE)
+
+print(fit.rf$finalModel)</code></pre>
 <pre><code>## 
 ## Call:
 ##  randomForest(x = x, y = y, ntree = 10, mtry = param$mtry, allowParallel = TRUE,      verbose = FALSE) 
@@ -211,7 +201,7 @@ plot(VarImportance, main = &quot;Most relevant variables&quot;, top = 10)</code>
 </div>
 <div id="predict-classe" class="section level2">
 <h2>Predict classe</h2>
-<p>Now we will predit <em>classe</em> for each <em>problem_id</em> of the test data set</p>
+<p>Now we will predit <strong>classe</strong> for each <strong>problem_id</strong> of the test data set</p>
 <pre class="r"><code>pred.rf.test&lt;-predict(fit.rf, newdata = test[,-which(names(test) %in% &quot;problem_id&quot;)])
 t(data.frame(problem_id = test$problem_id, prediction = pred.rf.test))</code></pre>
 <pre><code>##            [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
